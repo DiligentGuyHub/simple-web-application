@@ -1,0 +1,109 @@
+﻿@model IEnumerable<Example.Models.User>
+@{
+    ViewBag.Title = "All users";
+}
+@*<a asp-action="Create">Add user</a>*@
+<div class="container-fluid">
+    <div class="row">
+        <button id='btn-blocks' type="button" class="btn btn-danger col-sm-4" onclick="BlockSelected()">Block</button>
+        <button id='btn-unblock' type="button" class="btn btn-success col-sm-4" onclick="UnblockSelected()">Unblock</button>
+        <button id='btn-delete' type="button" class="btn btn-secondary col-sm-4" onclick="DeleteSelected()">Delete</button>
+    </div>
+    <div class="row table-responsive">
+        <table class="table table-hover">
+            <thead class="bg-dark text-light">
+                <tr>
+                    <th>All</th>
+                    <th>Id</th>
+                    <th>Username</th>
+                    <th>Mail</th>
+                    <th>Registration date</th>
+                    <th>Last login</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="small"><input id="@item.Id" class="checkbox" type="checkbox"></td>
+                        <td>@item.Id</td>
+                        <td>@item.Username</td>
+                        <td>@item.Mail</td>
+                        <td>@item.RegistrationDate</td>
+                        <td>@item.LastSeenOnline.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>@item.Status</td>
+                        @*<td>
+                            <a asp-action="Details" asp-controller="Home" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Edit" asp-controller="Home" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Delete" asp-controller="Home" asp-route-id="@item.Id">Delete</a>
+                        </td>*@
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    //$(document).ready(function () {
+    //    $("#btn-block").on("click", function () {
+    //        console.log("IT WORKS");
+    //        ids = []
+    //        for (i = 0; i < $('.checkbox:checkbox:checked').length; i++) {
+    //            ids.push($('.checkbox:checkbox:checked')[i].id)
+    //        }
+    //        $.ajax({
+    //            type: "POST",
+    //            url: "/Home/Block",
+    //            data: { ids: ids },
+    //            async: true
+    //        });
+    //    })
+    //})
+
+    function BlockSelected()
+    {
+        $.ajax({
+            type: "POST",
+            url: "/Home/BlockSelected",
+            data: { ids: GetSelected() },
+            success: function () {
+                location.reload()
+                console.log("Blocked successfully")
+            }
+        });
+    }
+
+    function UnblockSelected() {
+        $.ajax({
+            type: "POST",
+            url: "/Home/UnblockSelected",
+            data: { ids: GetSelected() },
+            success: function () {
+                location.reload()
+                console.log("Unblocked successfully")
+            }
+        });
+    }
+
+    function DeleteSelected() {
+        $.ajax({
+            type: "POST",
+            url: "/Home/DeleteSelected",
+            data: { ids: GetSelected() },
+            success: function () {
+                location.reload()
+                console.log("Deleted successfully")
+            }
+        });
+    }
+
+    function GetSelected() {
+        result = []
+        for (i = 0; i < $('.checkbox:checkbox:checked').length; i++) {
+            result.push($('.checkbox:checkbox:checked')[i].id)
+        }
+        return result;
+    }
+</script>

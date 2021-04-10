@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Example.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Example.Controllers
 {
@@ -17,9 +18,23 @@ namespace Example.Controllers
         {
             db = context;
         }
+        [Authorize]
         public async Task<IActionResult> Index()
         {
-            return View(await db.Users.ToListAsync());
+            if (User.Identity.IsAuthenticated)
+            {
+                return Content(User.Identity.Name);
+            }
+            return Content("Not autthenticated");
+        }
+
+        public async Task<IActionResult> Table()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return View(await db.Users.ToListAsync());
+            }
+            return Content("Not autthenticated");
         }
         public IActionResult Create()
         {
@@ -35,7 +50,7 @@ namespace Example.Controllers
             user.Status = "Active";
             db.Users.Add(user);
             await db.SaveChangesAsync();
-            return RedirectToAction("Index");
+            return RedirectToAction("Table");
         }
 
         // DETAILS
@@ -66,7 +81,7 @@ namespace Example.Controllers
         {
             db.Users.Update(user);
             await db.SaveChangesAsync();
-            return RedirectToAction("Index");
+            return RedirectToAction("Table");
         }
 
         // DELETE
@@ -93,10 +108,60 @@ namespace Example.Controllers
                 {
                     db.Users.Remove(user);
                     await db.SaveChangesAsync();
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Table");
                 }
             }
             return NotFound();
         }
+
+        // Delete
+        [HttpPost]
+        public async Task<IActionResult> DeleteSelected(int[] ids)
+        {
+            foreach (var id in ids)
+            {
+                User user = await db.Users.FirstOrDefaultAsync(p => p.Id == id);
+                if (user != null)
+                {
+                    db.Users.Remove(user);
+                    await db.SaveChangesAsync();
+                }
+            }
+            return RedirectToAction("Table");
+        }
+
+        // Block
+        [HttpPost]
+        public async Task<IActionResult> BlockSelected(int[] ids)
+        {
+            foreach (var id in ids)
+            {
+                User user = await db.Users.FirstOrDefaultAsync(p => p.Id == id);
+                if (user != null)
+                {
+                    user.Status = "Blocked";
+                    db.Users.Update(user);
+                    await db.SaveChangesAsync();
+                }
+            }
+            return RedirectToAction("Table");
+        }
+        // Unblock
+        [HttpPost]
+        public async Task<IActionResult> UnblockSelected(int[] ids)
+        {
+            foreach (var id in ids)
+            {
+                User user = await db.Users.FirstOrDefaultAsync(p => p.Id == id);
+                if (user != null)
+                {
+                    user.Status = "Active";
+                    db.Users.Update(user);
+                    await db.SaveChangesAsync();
+                }
+            }
+            return RedirectToAction("Table");
+        }
+
     }
 }
