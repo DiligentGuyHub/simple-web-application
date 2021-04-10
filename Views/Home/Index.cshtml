@@ -1,0 +1,31 @@
+﻿@model IEnumerable<Example.Models.User>
+@{
+    ViewBag.Title = "All users";
+}
+<a asp-action="Create">Add user</a>
+<div class='row'>
+    <button id='btn-block' type="button" class="btn btn-danger col-sm-4">Block</button>
+    <button id='btn-unblock' type="button" class="btn btn-success col-sm-4">Unblock</button>
+    <button id='btn-delete' type="button" class="btn btn-secondary col-sm-4">Delete</button>
+</div>
+<div class="table-responsive container-fluid">
+    <table class="table table-hover">
+        <thead class="bg-dark text-light">
+            <tr><th>All</th><th>Id</th><th>Username</th><th>Mail</th><th></th></tr>
+        </thead>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="small"><input type="checkbox"></td>
+                <td>@item.Id</td>
+                <td>@item.Username</td>
+                <td>@item.Mail</td>
+                <td>
+                    <a asp-action="Details" asp-controller="Home" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Edit" asp-controller="Home" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Delete" asp-controller="Home" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </table>
+</div>

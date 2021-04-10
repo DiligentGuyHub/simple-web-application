@@ -1,0 +1,29 @@
+﻿@model Example.Models.User
+@{
+    ViewBag.Title = Model.Username;
+}
+<h2>User @Model.Username</h2>
+<div>
+    <dl class="dl-horizontal">
+        <dt>ID</dt>
+        <dd>@Model.Id</dd>
+
+        <dt>Username</dt>
+        <dd>@Model.Username</dd>
+
+        <dt>Mail</dt>
+        <dd>@Model.Mail</dd>
+
+        <dt>Password</dt>
+        <dd>@Model.Password</dd>
+
+        <dt>Registration date</dt>
+        <dd>@Model.RegistrationDate</dd>
+
+        <dt>Last seen online</dt>
+        <dd>@Model.LastSeenOnline</dd>
+
+        <dt>Status</dt>
+        <dd>@Model.Status</dd>
+    </dl>
+</div>
