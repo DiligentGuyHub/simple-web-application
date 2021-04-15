@@ -14,6 +14,7 @@ namespace Example.Controllers
     public class AccountController : Controller
     {
         private ApplicationContext db;
+        public static User ActiveUser = new User();
         public AccountController(ApplicationContext context)
         {
             db = context;
@@ -32,10 +33,13 @@ namespace Example.Controllers
                 User user = await db.Users.FirstOrDefaultAsync(u => u.Username == model.Username && u.Password == model.Password);
                 if (user != null)
                 {
+                    //
+                    ActiveUser.Id = user.Id;
                     await Authenticate(model.Username); // authenticate
-                    if(user.Status == "Blocked")
+                    if (user.Status == "Blocked")
                     {
-                        return RedirectToAction("Login", "Account");
+                        ModelState.AddModelError("", "User is blocked");
+                        return View(model);
                     }
                     user.LastSeenOnline = DateTime.Now;
                     db.Users.Update(user);
@@ -61,14 +65,14 @@ namespace Example.Controllers
                 if (user == null)
                 {
                     // добавляем пользователя в бд
-                    db.Users.Add(new User 
-                    { 
+                    db.Users.Add(new User
+                    {
                         Username = model.Username,
-                        Password = model.Password, 
+                        Password = model.Password,
                         Mail = model.Mail,
                         RegistrationDate = DateTime.Now,
                         LastSeenOnline = DateTime.Now,
-                        Status = "Active" 
+                        Status = "Active"
                     });
                     await db.SaveChangesAsync();
 

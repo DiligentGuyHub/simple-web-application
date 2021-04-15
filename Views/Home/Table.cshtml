@@ -5,15 +5,15 @@
 @*<a asp-action="Create">Add user</a>*@
 <div class="container-fluid">
     <div class="row">
-        <button id='btn-blocks' type="button" class="btn btn-danger col-sm-4" onclick="BlockSelected()">Block</button>
-        <button id='btn-unblock' type="button" class="btn btn-success col-sm-4" onclick="UnblockSelected()">Unblock</button>
-        <button id='btn-delete' type="button" class="btn btn-secondary col-sm-4" onclick="DeleteSelected()">Delete</button>
+        <button id='btn-blocks' class="btn btn-danger col-sm-4" onclick="BlockSelected()">Block</button>
+        <button id='btn-unblock'  class="btn btn-success col-sm-4" onclick="UnblockSelected()">Unblock</button>
+        <button id='btn-delete' class="btn btn-secondary col-sm-4" onclick="DeleteSelected()">Delete</button>
     </div>
     <div class="row table-responsive">
         <table class="table table-hover">
             <thead class="bg-dark text-light">
                 <tr>
-                    <th>All</th>
+                    <th><button id='btn-blocks' class="btn btn-dark" onclick="AllSelected()">All</button></th>
                     <th>Id</th>
                     <th>Username</th>
                     <th>Mail</th>
@@ -61,6 +61,15 @@
     //        });
     //    })
     //})
+    var all = true;
+    function AllSelected()
+    {
+        for (i = 0; i < $(':checkbox').length; i++)
+        {
+            $(':checkbox')[i].checked = all;
+        }
+        all = !all;
+    }
 
     function BlockSelected()
     {
