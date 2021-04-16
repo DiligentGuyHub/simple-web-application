@@ -144,13 +144,13 @@ namespace Example.Controllers
                     await db.SaveChangesAsync();
                 }
             }
-            for (int i = 0; i < ids.Length; i++)
-            {
-                if (AccountController.ActiveUser.Id == ids[i])
-                {
-                    return RedirectPermanent("/Account/Login");
-                }
-            }
+            //for (int i = 0; i < ids.Length; i++)
+            //{
+            //    if (AccountController.ActiveUser.Id == ids[i])
+            //    {
+            //        return RedirectPermanent("/Account/Login");
+            //    }
+            //}
             return RedirectToAction("Table");
         }
         // Unblock
