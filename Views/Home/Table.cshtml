@@ -75,19 +75,20 @@
     {
         $.ajax({
             type: "POST",
-            url: "/Home/BlockSelected",
+            url: "/Account/BlockSelected",
             data: { ids: GetSelected() },
             success: function () {
                 location.reload()
                 console.log("Blocked successfully")
             }
         });
+
     }
 
     function UnblockSelected() {
         $.ajax({
             type: "POST",
-            url: "/Home/UnblockSelected",
+            url: "/Account/UnblockSelected",
             data: { ids: GetSelected() },
             success: function () {
                 location.reload()
@@ -99,7 +100,7 @@
     function DeleteSelected() {
         $.ajax({
             type: "POST",
-            url: "/Home/DeleteSelected",
+            url: "/Account/DeleteSelected",
             data: { ids: GetSelected() },
             success: function () {
                 location.reload()

@@ -102,7 +102,71 @@ namespace Example.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "Account");
+            return Redirect("/Account/Login"); 
+        }
+
+        // Delete
+        [HttpPost]
+        public async Task<IActionResult> DeleteSelected(int[] ids)
+        {
+            foreach (var id in ids)
+            {
+                User user = await db.Users.FirstOrDefaultAsync(p => p.Id == id);
+                if (user != null)
+                {
+                    db.Users.Remove(user);
+                    await db.SaveChangesAsync();
+                }
+            }
+            for (int i = 0; i < ids.Length; i++)
+            {
+                if (AccountController.ActiveUser.Id == ids[i])
+                {
+                    await Logout();
+                }
+            }
+            return RedirectToAction("Table", "Home");
+        }
+
+        // Block
+        [HttpPost]
+        public async Task<IActionResult> BlockSelected(int[] ids)
+        {
+            foreach (var id in ids)
+            {
+                User user = await db.Users.FirstOrDefaultAsync(p => p.Id == id);
+                if (user != null)
+                {
+                    user.Status = "Blocked";
+                    db.Users.Update(user);
+                    await db.SaveChangesAsync();
+                }
+            }
+            for (int i = 0; i < ids.Length; i++)
+            {
+                if (AccountController.ActiveUser.Id == ids[i])
+                {
+                    await Logout();
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            return RedirectToAction("Table", "Home");
+        }
+        // Unblock
+        [HttpPost]
+        public async Task<IActionResult> UnblockSelected(int[] ids)
+        {
+            foreach (var id in ids)
+            {
+                User user = await db.Users.FirstOrDefaultAsync(p => p.Id == id);
+                if (user != null)
+                {
+                    user.Status = "Active";
+                    db.Users.Update(user);
+                    await db.SaveChangesAsync();
+                }
+            }
+            return RedirectToAction("Table", "Home");
         }
     }
 }
